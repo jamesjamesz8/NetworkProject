@@ -11,8 +11,13 @@
 
 typedef struct node_ node_t;
 typedef struct link_ link_t; 
+typedef struct graph_ graph_t;
 
+struct graph_{
 
+        char topology_name[32];
+        node_t * node_list; // head pointer
+};  
 typedef struct interface_{
         char if_name[IF_NAME_SIZE];
         struct node_ *att_node;
@@ -72,11 +77,37 @@ static inline int get_node_intf_available_slot(node_t *node){
 
 }
 
-typedef struct graph_{
+static inline interface_t* get_node_if_by_name(node_t *node, char *if_name){
+	if(node == NULL){
+		printf("error : invalid node\n");
+		return NULL; 
+	}
+	
+	for(int i = 0;  i < MAX_INTF_PER_NODE; i++){
+		if(strncmp(node->intf[i]->if_name, if_name, IF_NAME_SIZE) == 0){
+			return node->intf[i];
+		}
+	}
+	return NULL; //none found 
+}
 
-        char topology_name[32];
-        node_t * node_list; // head pointer
-}graph_t; 
+static inline node_t* get_node_by_node_name(graph_t *topo, char *node_name){
+	if(topo == NULL || topo->node_list == NULL){
+		printf("Error : invalid graph/node list\n");
+		return NULL; 
+	}
+	node_t *curr = topo->node_list->next;
+	while(curr != NULL){
+		if(strncmp(curr->node_name, node_name, NODE_NAME_SIZE) == 0)
+			return curr; 
+	}
+	
+	return NULL; // none found. 
+	
+}
+
+
+
 
 /** graph.c functions **/ 
 void dump_graph(graph_t *graph);
