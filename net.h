@@ -39,10 +39,14 @@ static inline void init_intf_nw_prop(intf_nw_props_t *intf_nw_props){ //initiali
 	intf_nw_props->mask =0;
 }
 
+void interface_assign_mac_address(interface_t *interface);
+
 #define IF_MAC(intf_ptr) ((intf_ptr)->intf_nw_props.mac_add.mac) //interface mac address macro
 #define IF_IP(intf_ptr)  ((intf_ptr)->intf_nw_props.ip_add.ip_addr) //interface ip address macro
 
 #define NODE_LO_ADDR(node_ptr) (node_ptr->node_nw_prop.lb_addr.ip_addr) //loopback
+#define IS_INTF_L3_MODE(intf_ptr) (intf_ptr->node_nw_prop.is_lb_addr_config) 
+
 
 /* APIs to set Network Node Properties */
 bool_t node_set_loopback_address(node_t *node, char *ip_addr);
