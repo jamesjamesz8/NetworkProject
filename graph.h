@@ -22,6 +22,7 @@ typedef struct interface_{
         char if_name[IF_NAME_SIZE];
         struct node_ *att_node;
 	struct link_ *link; 
+	intf_nw_props_t intf_nw_props; //interface network properties. 
 
 }interface_t;
 
@@ -30,6 +31,7 @@ struct node_{
         interface_t *intf[MAX_INTF_PER_NODE]; //empty slots on the device
         node_t* next; 
         //glthread_t graph_glue;
+        node_nw_prop_t node_nw_prop; //node network properties. 
 };
 
 
@@ -84,6 +86,9 @@ static inline interface_t* get_node_if_by_name(node_t *node, char *if_name){
 	}
 	
 	for(int i = 0;  i < MAX_INTF_PER_NODE; i++){
+		if(node->intf[i] == NULL){
+			return NULL //NONE FOUND
+		}
 		if(strncmp(node->intf[i]->if_name, if_name, IF_NAME_SIZE) == 0){
 			return node->intf[i];
 		}
@@ -100,6 +105,8 @@ static inline node_t* get_node_by_node_name(graph_t *topo, char *node_name){
 	while(curr != NULL){
 		if(strncmp(curr->node_name, node_name, NODE_NAME_SIZE) == 0)
 			return curr; 
+		
+		curr = curr->next; 
 	}
 	
 	return NULL; // none found. 
